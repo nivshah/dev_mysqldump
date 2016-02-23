@@ -128,7 +128,9 @@ func dump(user, host, port, password, database, config_file string, db *sql.DB) 
 	command := "mysql --host " + host + " --user " + user + " -p" + password + " "
 	command += "INFORMATION_SCHEMA  --skip-column-names --batch "
 	command += "-e \"select table_name from tables where table_type = 'VIEW' and table_schema = '" + database + "'\""
-	command += "| xargs mysqldump --host " + host + " --user " + user + " -p" + password + " " + database
+	command += "| xargs mysqldump --host " + host + " --user " + user + " -p" + password + " " + database + " "
+	// And get rid of the DEFINER statements on the views, because they end up causing 'access denied' issues
+	command += "| sed -e 's/DEFINER[ ]*=[ ]*[^*]*\\*/\\*/'"
 	log.Println("Cmd: ", command)
 
 	cmd := exec.Command("/bin/bash", "-c", command)
