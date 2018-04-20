@@ -112,7 +112,7 @@ func dump(user, host, port, password, database, config_file string, db *sql.DB) 
 		command := "mysqldump --lock-tables=false --compact "
 		command += "--host " + host + " --user " + user + " -p" + password + " "
 		command += "--where=\"" + table.where + "\" "
-		command += table.flags
+		command += table.flags + " "
 		command += database + " " + table.table_name
 
 		cmd := exec.Command("/bin/bash", "-c", command)
