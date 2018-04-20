@@ -99,7 +99,7 @@ func dump(user, host, port, password, database, config_file string, db *sql.DB) 
 			}
 		}
 
-		db_tables = append(db_tables, Table{table_name, where})
+		db_tables = append(db_tables, Table{table_name, where, flags})
 	}
 
 	outfile, err := os.Create("./output.sql")
