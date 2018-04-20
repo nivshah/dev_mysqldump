@@ -59,6 +59,7 @@ func dump(user, host, port, password, database, config_file string, db *sql.DB) 
 		Tables []struct {
 			TableName string `yaml:"table_name"`
 			Where     string `yaml:"where"`
+			Flags     string `yaml:"flags"`
 		}
 	}
 	data, err := ioutil.ReadFile(config_file)
@@ -88,9 +89,11 @@ func dump(user, host, port, password, database, config_file string, db *sql.DB) 
 		}
 
 		where := "1=1"
+		flags := ""
 		for i := 0; i < len(config.Tables); i++ {
 			if config.Tables[i].TableName == table_name {
 				where = config.Tables[i].Where
+				flags = config.Tables[i].Flags
 				break
 			}
 		}
@@ -108,6 +111,7 @@ func dump(user, host, port, password, database, config_file string, db *sql.DB) 
 		command := "mysqldump --lock-tables=false --compact "
 		command += "--host " + host + " --user " + user + " -p" + password + " "
 		command += "--where=\"" + table.where + "\" "
+		command += table.flags
 		command += database + " " + table.table_name
 
 		cmd := exec.Command("/bin/bash", "-c", command)
