@@ -72,6 +72,7 @@ func dump(user, host, port, password, database, config_file string, db *sql.DB) 
 	type Table struct {
 		table_name string
 		where      string
+    flags      string
 	}
 	db_tables := []Table{}
 
