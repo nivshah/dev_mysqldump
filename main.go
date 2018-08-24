@@ -107,7 +107,7 @@ func dump(user, host, port, password, database, config_file string, db *sql.DB) 
 	defer outfile.Close()
 
 	// Add a create databse command to the dump file
-	outfile.WriteString("CREATE DATABASE " + database)
+	outfile.WriteString("CREATE DATABASE " + database + ";\n")
 
 	for i := 0; i < len(db_tables); i++ {
 		table := db_tables[i]
