@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"database/sql"
 	"flag"
-	_ "github.com/go-sql-driver/mysql"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func handleError(err interface{}) {
@@ -72,7 +72,7 @@ func dump(user, host, port, password, database, config_file string, db *sql.DB) 
 	type Table struct {
 		table_name string
 		where      string
-    flags      string
+		flags      string
 	}
 	db_tables := []Table{}
 
@@ -106,10 +106,13 @@ func dump(user, host, port, password, database, config_file string, db *sql.DB) 
 	handleError(err)
 	defer outfile.Close()
 
+	// Add a create databse command to the dump file
+	outfile.WriteString("CREATE DATABASE " + database)
+
 	for i := 0; i < len(db_tables); i++ {
 		table := db_tables[i]
 		log.Println("Running mysql_dump for", table.table_name)
-		command := "mysqldump --lock-tables=false --add-drop-database --compact "
+		command := "mysqldump --lock-tables=false --compact "
 		command += "--host " + host + " --user " + user + " -p" + password + " "
 		command += "--where=\"" + table.where + "\" "
 		command += table.flags + " "
