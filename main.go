@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
-
+    "gopkg.in/yaml.v2"
 	_ "github.com/go-sql-driver/mysql"
 )
 
