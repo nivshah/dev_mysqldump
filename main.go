@@ -107,7 +107,9 @@ func dump(user, host, port, password, database, config_file string, db *sql.DB) 
 	defer outfile.Close()
 
 	// Add a create databse command to the dump file
+    // This allows us to restore multiple databases at once
 	outfile.WriteString("CREATE DATABASE " + database + ";\n")
+	outfile.WriteString("USE " + database + ";\n")
 
 	for i := 0; i < len(db_tables); i++ {
 		table := db_tables[i]
