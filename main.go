@@ -109,7 +109,7 @@ func dump(user, host, port, password, database, config_file string, db *sql.DB) 
 	for i := 0; i < len(db_tables); i++ {
 		table := db_tables[i]
 		log.Println("Running mysql_dump for", table.table_name)
-		command := "mysqldump --lock-tables=false --compact "
+		command := "mysqldump --lock-tables=false --add-drop-database --compact "
 		command += "--host " + host + " --user " + user + " -p" + password + " "
 		command += "--where=\"" + table.where + "\" "
 		command += table.flags + " "
