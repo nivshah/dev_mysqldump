@@ -10,8 +10,8 @@ import (
 	"os/exec"
 	"crypto/x509"
 	"crypto/tls"
-    "gopkg.in/yaml.v2"
 	"github.com/go-sql-driver/mysql"
+	"gopkg.in/yaml.v2"
 )
 
 func handleError(err interface{}) {
