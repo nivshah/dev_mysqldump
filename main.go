@@ -61,7 +61,7 @@ func analyze(user, host, port, password, database, ssl_ca string, db *sql.DB) {
 
 }
 
-func dump(user, host, port, password, database, config_file, ssl_ca string, db *sql.DB) {
+func dump(user, host, port, password, database, ssl_ca, config_file string, db *sql.DB) {
 	type DbDumpConfig struct {
 		Tables []struct {
 			TableName string `yaml:"table_name"`
@@ -115,6 +115,11 @@ func dump(user, host, port, password, database, config_file, ssl_ca string, db *
 
 	// Add a create databse command to the dump file
     // This allows us to restore multiple databases at once
+
+    // suspend foreign key checks
+    // this will be good on restoration
+    outfile.WriteString("SET FOREIGN_KEY_CHECKS = 0;\n");
+
 	outfile.WriteString("CREATE DATABASE " + database + ";\n")
 	outfile.WriteString("USE " + database + ";\n")
 
