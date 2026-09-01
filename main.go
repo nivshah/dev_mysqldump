@@ -124,8 +124,7 @@ func dump(user, host, port, password, database, ssl_ca, config_file string, db *
 	outfile.WriteString("USE " + database + ";\n")
 
     log.Println("Running mysql_dump for functions only")
-    command := "mysqldump --lock-tables=false --compact --routines "
-    command += "-n -t "
+    command := "mysqldump --routines -n -t -d "
 	command += "--host " + host + " --port " + port + " "
 	command += "--user " + user + " -p" + password + " "
 
@@ -135,7 +134,10 @@ func dump(user, host, port, password, database, ssl_ca, config_file string, db *
 
     command += database
 
-	cmd := exec.Command("/bin/bash", "-c", command)
+    log.Println(command)
+
+    cmd := exec.Command("/bin/bash", "-c", command)
+
 	cmd.Stdout = outfile
 	var errBuff bytes.Buffer
 	cmd.Stderr = &errBuff
