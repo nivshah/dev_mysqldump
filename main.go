@@ -123,10 +123,35 @@ func dump(user, host, port, password, database, ssl_ca, config_file string, db *
 	outfile.WriteString("CREATE DATABASE " + database + ";\n")
 	outfile.WriteString("USE " + database + ";\n")
 
+    log.Println("Running mysql_dump for functions only")
+    command := "mysqldump --lock-tables=false --compact --routines "
+    command += "-n -t "
+	command += "--host " + host + " --port " + port + " "
+	command += "--user " + user + " -p" + password + " "
+
+	if ssl_ca != "" {
+  	  command += "--ssl-ca " + ssl_ca + " "
+	}
+
+    command += database
+
+	cmd := exec.Command("/bin/bash", "-c", command)
+	cmd.Stdout = outfile
+	var errBuff bytes.Buffer
+	cmd.Stderr = &errBuff
+
+	err = cmd.Start()
+	handleError(err)
+
+    cmd.Wait()
+	if errBuff.Len() > 0 {
+	  log.Printf("\n%s", errBuff.String())
+	}
+
 	for i := 0; i < len(db_tables); i++ {
 		table := db_tables[i]
 		log.Println("Running mysql_dump for", table.table_name)
-		command := "mysqldump --lock-tables=false --compact --routines "
+		command := "mysqldump --lock-tables=false --compact "
 		command += "--host " + host + " --port " + port + " "
 		command += "--user " + user + " -p" + password + " "
 
@@ -153,7 +178,7 @@ func dump(user, host, port, password, database, ssl_ca, config_file string, db *
 	}
 
 	// Dump the views too
-	command := "mysql --host " + host + " --port " + port + " --user " + user + " -p" + password + " "
+	command = "mysql --host " + host + " --port " + port + " --user " + user + " -p" + password + " "
 
 	if ssl_ca != "" {
 		command += "--ssl-ca " + ssl_ca + " "
@@ -170,9 +195,8 @@ func dump(user, host, port, password, database, ssl_ca, config_file string, db *
 	command += "| sed -e 's/DEFINER[ ]*=[ ]*[^*]*\\*/\\*/'"
 	log.Println("Cmd: ", command)
 
-	cmd := exec.Command("/bin/bash", "-c", command)
+	cmd = exec.Command("/bin/bash", "-c", command)
 	cmd.Stdout = outfile
-	var errBuff bytes.Buffer
 	cmd.Stderr = &errBuff
 
 	err = cmd.Start()
