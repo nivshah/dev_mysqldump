@@ -153,7 +153,8 @@ func dump(user, host, port, password, database, ssl_ca, config_file string, db *
 	for i := 0; i < len(db_tables); i++ {
 		table := db_tables[i]
 		log.Println("Running mysql_dump for", table.table_name)
-		command := "mysqldump --lock-tables=false --compact "
+		command := "mysqldump --lock-tables=false --skip-add-locks "
+        command += "--skip-disable-keys --compact "
 		command += "--host " + host + " --port " + port + " "
 		command += "--user " + user + " -p" + password + " "
 
@@ -189,7 +190,7 @@ func dump(user, host, port, password, database, ssl_ca, config_file string, db *
 
 	command += "INFORMATION_SCHEMA  --skip-column-names --batch "
 	command += "-e \"select table_name from tables where table_type = 'VIEW' and table_schema = '" + database + "'\""
-	command += "| xargs mysqldump --host " + host + " --port " + port + " --user " + user + " -p" + password + " " + database + " "
+	command += "| xargs mysqldump --lock-tables=false --skip-add-locks --skip-disable-keys --compact --host " + host + " --port " + port + " --user " + user + " -p" + password + " " + database + " "
 
 	if ssl_ca != "" {
 		command += "--ssl-ca " + ssl_ca + " "
