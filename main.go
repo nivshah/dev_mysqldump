@@ -165,6 +165,7 @@ func dump(user, host, port, password, database, ssl_ca, config_file string, db *
 		command += table.flags + " "
 		command += database + " " + table.table_name
 
+		log.Println(command)
 		cmd := exec.Command("/bin/bash", "-c", command)
 		cmd.Stdout = outfile
 		var errBuff bytes.Buffer
@@ -195,7 +196,7 @@ func dump(user, host, port, password, database, ssl_ca, config_file string, db *
 	}
 	// And get rid of the DEFINER statements on the views, because they end up causing 'access denied' issues
 	command += "| sed -e 's/DEFINER[ ]*=[ ]*[^*]*\\*/\\*/'"
-	log.Println("Cmd: ", command)
+	log.Println(command)
 
 	cmd = exec.Command("/bin/bash", "-c", command)
 	cmd.Stdout = outfile
