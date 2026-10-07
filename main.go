@@ -190,7 +190,7 @@ func dump(user, host, port, password, database, ssl_ca, config_file string, db *
 
 	command += "INFORMATION_SCHEMA  --skip-column-names --batch "
 	command += "-e \"select table_name from tables where table_type = 'VIEW' and table_schema = '" + database + "'\""
-	command += "| xargs mysqldump --lock-tables=false --skip-add-locks --skip-disable-keys --compact --host " + host + " --port " + port + " --user " + user + " -p" + password + " " + database + " "
+	command += "| xargs mysqldump --host " + host + " --port " + port + " --user " + user + " -p" + password + " " + database + " "
 
 	if ssl_ca != "" {
 		command += "--ssl-ca " + ssl_ca + " "
